@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>謝天｜閱讀密室逃脫</title>
+    <meta name="description" content="陳之藩散文〈謝天〉互動式閱讀密室逃脫遊戲，共五關或十關，全面考驗閱讀理解能力。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Noto+Sans+TC:wght@300;400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════
+   RESET & VARIABLES
+══════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --sky-top:    #1e88e5;
+    --sky-mid:    #42a5f5;
+    --sky-bot:    #90caf9;
+    --sun:        #FFD600;
+    --white:      #1a3a5c;
+    --gray:       #5a7fa8;
+    --card-bg:    rgba(255,255,255,0.72);
+    --card-border:rgba(255,255,255,0.9);
+    --gold:       #f59e0b;
+    --gold-dark:  #d97706;
+    --ok:         #16a34a;
+    --ok-bg:      rgba(22,163,74,0.1);
+    --ng:         #dc2626;
+    --ng-bg:      rgba(220,38,38,0.1);
+    --shadow:     rgba(30,136,229,0.18);
+    --text-dark:  #1a3a5c;
+    --text-mid:   #2563a8;
+    --text-lite:  #5a7fa8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+    min-height: 100vh;
+    font-family: 'Noto Sans TC', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: var(--sky-top);
+}
+
+/* ══════════════════════════════════
+   SKY BACKGROUND
+══════════════════════════════════ */
+.sky-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background: linear-gradient(180deg,
+        #1565c0 0%,
+        #1e88e5 25%,
+        #42a5f5 55%,
+        #90caf9 80%,
+        #bbdefb 100%);
+    overflow: hidden;
+}
+
+/* Sun */
+.sun {
+    position: absolute;
+    top: -60px; right: 10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #fff9c4 0%, #FFD600 40%, #FF8F00 80%, transparent 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px 30px rgba(255,214,0,0.5), 0 0 160px 60px rgba(255,214,0,0.2);
+    animation: sunRise 3s ease-out both;
+}
+@keyframes sunRise {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Sun rays */
+.sun-rays {
+    position: absolute;
+    top: -90px; right: calc(10% - 70px);
+    width: 340px; height: 340px;
+    animation: spinRays 20s linear infinite;
+}
+.sun-rays::before, .sun-rays::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-conic-gradient(
+        rgba(255,214,0,0.18) 0deg 10deg,
+        transparent 10deg 20deg
+    );
+    border-radius: 50%;
+}
+@keyframes spinRays { to { transform: rotate(360deg); } }
+
+/* Clouds */
+.clouds-layer { position: absolute; inset: 0; pointer-events: none; }
+
+.cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.9;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+    animation: driftCloud linear infinite;
+}
+.cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+/* Cloud 1 */
+.c1 { width:160px;height:50px; top:8%; left:-180px; animation-duration:32s; animation-delay:0s; }
+.c1::before { width:80px;height:70px; top:-35px; left:20px; }
+.c1::after  { width:60px;height:55px; top:-28px; left:65px; }
+
+/* Cloud 2 */
+.c2 { width:220px;height:60px; top:15%; left:-250px; animation-duration:45s; animation-delay:-14s; opacity:0.85; }
+.c2::before { width:100px;height:80px; top:-40px; left:30px; }
+.c2::after  { width:75px; height:65px; top:-32px; left:95px; }
+
+/* Cloud 3 */
+.c3 { width:120px;height:40px; top:5%;  left:-140px; animation-duration:28s; animation-delay:-7s; opacity:0.75; }
+.c3::before { width:60px;height:55px; top:-28px; left:15px; }
+.c3::after  { width:50px;height:45px; top:-22px; left:52px; }
+
+/* Cloud 4 */
+.c4 { width:180px;height:55px; top:22%; left:-200px; animation-duration:38s; animation-delay:-21s; }
+.c4::before { width:90px;height:75px; top:-38px; left:25px; }
+.c4::after  { width:65px;height:55px; top:-28px; left:80px; }
+
+/* Cloud 5 */
+.c5 { width:140px;height:45px; top:30%; left:-160px; animation-duration:42s; animation-delay:-30s; opacity:0.8; }
+.c5::before { width:70px;height:60px; top:-30px; left:18px; }
+.c5::after  { width:55px;height:48px; top:-24px; left:60px; }
+
+@keyframes driftCloud {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(100vw + 300px)); }
+}
+
+/* Ground line */
+.sky-ground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, transparent, rgba(144,202,249,0.4));
+}
+
+/* ══════════════════════════════════
+   SOUND TOGGLE
+══════════════════════════════════ */
+.sound-btn {
+    position: fixed;
+    top: 1.3rem; right: 1.3rem;
+    z-index: 200;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.sound-btn:hover { background: rgba(255,255,255,0.95); transform: scale(1.08); }
+
+/* Einstein */
+.einstein-wrap {
+    position: fixed;
+    bottom: 0; right: 1.5rem;
+    z-index: 100;
+    width: 130px;
+    pointer-events: none;
+    animation: einsteinSway 4s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+.einstein-wrap img {
+    width: 100%; display: block;
+    filter: contrast(1.05) saturate(1.1);
+}
+@keyframes einsteinSway {
+    0%,100% { transform: rotate(-4deg); }
+    50%      { transform: rotate(4deg);  }
+}
+
+/* ══════════════════════════════════
+   TRANSITION OVERLAY
+══════════════════════════════════ */
+.overlay {
+    position: fixed; inset: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 500;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.32s ease;
+    backdrop-filter: blur(4px);
+}
+.overlay.on { opacity: 1; pointer-events: all; }
+
+/* ══════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════ */
+.screen {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2.5rem 1.5rem;
+    animation: screenIn 0.5s ease both;
+}
+.screen.hidden { display: none; }
+@keyframes screenIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════ */
+.home-hero {
+    text-align: center;
+    margin-bottom: 2.8rem;
+}
+.home-eyebrow {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.4em;
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.home-main-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    color: #fff;
+    text-shadow:
+        0 3px 20px rgba(0,0,0,0.2),
+        0 0 60px rgba(255,255,255,0.4);
+    letter-spacing: 0.25em;
+    line-height: 1.1;
+}
+.home-sub-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.45em;
+    margin-top: 0.4rem;
+}
+.home-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 1.1rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+/* Selection Grid */
+.sel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    width: 100%; max-width: 760px;
+    margin-bottom: 2.5rem;
+}
+.sel-panel {
+    background: rgba(255,255,255,0.78);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 22px;
+    padding: 1.6rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(30,136,229,0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.sel-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(30,136,229,0.24);
+}
+.sel-head {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.1rem;
+}
+.choice-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.choice-btn {
+    display: flex; align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+    border: 2px solid rgba(37,99,168,0.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.6);
+    color: var(--text-dark);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-align: left; width: 100%;
+}
+.choice-btn:hover {
+    border-color: rgba(30,136,229,0.5);
+    background: rgba(227,242,253,0.8);
+    transform: translateX(3px);
+}
+.choice-btn.picked {
+    border-color: var(--sky-top);
+    background: rgba(30,136,229,0.12);
+    color: var(--sky-top);
+    box-shadow: 0 0 0 3px rgba(30,136,229,0.15);
+}
+.choice-icon { font-size: 1.55rem; flex-shrink: 0; }
+.choice-info { flex: 1; }
+.choice-name { font-weight: 600; line-height: 1.3; }
+.choice-hint { font-size: 0.73rem; color: var(--text-lite); margin-top: 0.18rem; }
+.choice-btn.picked .choice-hint { color: rgba(30,136,229,0.7); }
+
+/* Start button */
+.btn-start {
+    padding: 1.05rem 4.5rem;
+    background: linear-gradient(135deg, #1e88e5, #0d47a1);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: #fff; cursor: pointer;
+    letter-spacing: 0.12em;
+    transition: all 0.28s ease;
+    box-shadow: 0 8px 32px rgba(30,136,229,0.4), 0 2px 8px rgba(0,0,0,0.15);
+    position: relative; overflow: hidden;
+}
+.btn-start::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+    border-radius: inherit;
+}
+.btn-start:hover:not(:disabled) {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(30,136,229,0.5);
+}
+.btn-start:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+
+.divider {
+    width: 100%; max-width: 400px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    margin: 2rem auto 1rem;
+}
+.divider-note { text-align: center; font-size: 0.76rem; color: rgba(255,255,255,0.75); }
+
+/* ══════════════════════════════════
+   BACK BUTTON
+══════════════════════════════════ */
+.btn-back {
+    position: fixed;
+    top: 1.3rem; left: 1.3rem; z-index: 200;
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1.15rem;
+    background: rgba(255,255,255,0.75);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 100px;
+    color: var(--text-mid);
+    font-size: 0.82rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+.btn-back:hover { background: rgba(255,255,255,0.95); color: var(--sky-top); }
+
+/* ══════════════════════════════════
+   GAME SCREEN
+══════════════════════════════════ */
+.game-inner {
+    width: 100%; max-width: 840px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1.1rem;
+}
+
+/* Progress */
+.pg-wrap { width: 100%; }
+.pg-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.6rem;
+}
+.pg-level { font-size: 0.82rem; color: #fff; font-weight: 600; letter-spacing: 0.1em; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+.pg-count  { font-size: 0.78rem; color: rgba(255,255,255,0.8); }
+.pg-track {
+    height: 7px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+.pg-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD600, #FF8F00);
+    border-radius: 10px;
+    transition: width 0.65s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 10px rgba(255,214,0,0.6);
+}
+
+/* Fragment row */
+.frag-row {
+    display: flex; gap: 0.55rem;
+    flex-wrap: wrap; justify-content: center; width: 100%;
+}
+.frag-slot {
+    width: 50px; height: 50px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.4rem;
+    color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    transition: all 0.4s ease;
+}
+.frag-slot.lit {
+    border-color: var(--sun);
+    color: #1a3a5c;
+    background: rgba(255,214,0,0.85);
+    box-shadow: 0 0 18px rgba(255,214,0,0.7), 0 3px 8px rgba(0,0,0,0.1);
+    animation: slotBurst 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes slotBurst {
+    from { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);     opacity: 1; }
+}
+
+/* Scenario card */
+.scene-wrap {
+    width: 100%;
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.15rem 1.5rem;
+    background: rgba(255,255,255,0.72);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(30,136,229,0.1);
+}
+.scene-icon { font-size: 1.9rem; flex-shrink: 0; }
+.scene-body { font-size: 0.87rem; color: var(--text-lite); font-style: italic; line-height: 1.75; }
+
+/* Question card */
+.q-card {
+    width: 100%;
+    background: rgba(255,255,255,0.82);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 24px;
+    padding: 2.1rem 2.2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 50px rgba(30,136,229,0.15), 0 4px 12px rgba(0,0,0,0.06);
+}
+.q-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    line-height: 1.9; color: var(--text-dark);
+    margin-bottom: 1.8rem;
+}
+.ans-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+}
+.ans-btn {
+    display: flex; align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.9rem 1.05rem;
+    border: 2px solid rgba(37,99,168,0.15);
+    background: rgba(255,255,255,0.6);
+    border-radius: 14px;
+    color: var(--text-dark);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer; transition: all 0.2s ease;
+    text-align: left; line-height: 1.5;
+}
+.ans-btn:hover:not(:disabled) {
+    border-color: var(--sky-top);
+    background: rgba(227,242,253,0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(30,136,229,0.15);
+}
+.ans-badge {
+    min-width: 26px; height: 26px;
+    border-radius: 7px;
+    background: rgba(30,136,229,0.12);
+    color: var(--sky-top);
+    font-size: 0.74rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    transition: background 0.2s ease;
+}
+.ans-btn:hover:not(:disabled) .ans-badge { background: rgba(30,136,229,0.22); }
+.ans-btn.correct {
+    border-color: var(--ok);
+    background: var(--ok-bg);
+    color: var(--ok);
+}
+.ans-btn.correct .ans-badge { background: rgba(22,163,74,0.18); color: var(--ok); }
+.ans-btn.wrong {
+    border-color: var(--ng);
+    background: var(--ng-bg);
+    color: var(--ng);
+}
+.ans-btn.wrong .ans-badge { background: rgba(220,38,38,0.18); color: var(--ng); }
+.ans-btn:disabled { cursor: not-allowed; }
+
+/* Feedback box */
+.fb-box { width: 100%; padding: 1.2rem 1.6rem; border-radius: 16px; display: none; }
+.fb-box.show { display: block; }
+.fb-box.fb-ok { background: rgba(22,163,74,0.08); border: 2px solid rgba(22,163,74,0.3); }
+.fb-box.fb-ng { background: rgba(220,38,38,0.07); border: 2px solid rgba(220,38,38,0.25); }
+.fb-head { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+.fb-box.fb-ok .fb-head { color: var(--ok); }
+.fb-box.fb-ng .fb-head { color: var(--ng); }
+.fb-explain { font-size: 0.84rem; color: var(--text-lite); line-height: 1.75; }
+.fb-frag { margin-top: 0.75rem; display: none; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #d97706; }
+.fb-frag.show { display: flex; }
+.fb-frag-char { font-family: 'ZCOOL XiaoWei', serif; font-size: 1.55rem; color: #d97706; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
+
+/* Action buttons */
+.action-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; width: 100%; }
+.btn-next {
+    padding: 0.88rem 3rem;
+    background: linear-gradient(135deg, #1e88e5, #0d47a1);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700;
+    color: #fff; cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 6px 24px rgba(30,136,229,0.35);
+    display: none;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(30,136,229,0.45); }
+.btn-retry {
+    padding: 0.88rem 3rem;
+    background: transparent;
+    border: 2px solid rgba(220,38,38,0.4);
+    border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem;
+    color: var(--ng); cursor: pointer; transition: all 0.25s ease;
+    display: none;
+}
+.btn-retry:hover { background: var(--ng-bg); border-color: var(--ng); }
+
+/* Shake */
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    15%  { transform: translateX(-9px); }
+    30%  { transform: translateX(9px); }
+    45%  { transform: translateX(-6px); }
+    60%  { transform: translateX(6px); }
+    75%  { transform: translateX(-3px); }
+    90%  { transform: translateX(3px); }
+}
+.shaking { animation: shake 0.48s ease; }
+
+/* ══════════════════════════════════
+   NAME INPUT SCREEN
+══════════════════════════════════ */
+.name-wrap {
+    text-align: center;
+    max-width: 520px; width: 100%;
+}
+.name-icon { font-size: 4rem; margin-bottom: 1.2rem; animation: bounce 1s ease infinite alternate; }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+.name-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    margin-bottom: 0.6rem;
+}
+.name-sub { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; }
+.name-card {
+    background: rgba(255,255,255,0.82);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 50px rgba(30,136,229,0.18);
+    margin-bottom: 1.5rem;
+}
+.name-label {
+    font-size: 0.88rem; color: var(--text-mid); font-weight: 600;
+    margin-bottom: 0.8rem; display: block; text-align: left;
+}
+.name-input {
+    width: 100%; padding: 0.9rem 1.2rem;
+    border: 2px solid rgba(30,136,229,0.25);
+    border-radius: 12px;
+    font-family: 'Noto Serif TC', serif; font-size: 1.2rem;
+    color: var(--text-dark);
+    background: rgba(255,255,255,0.9);
+    outline: none; transition: all 0.22s ease;
+    text-align: center; letter-spacing: 0.08em;
+}
+.name-input:focus { border-color: var(--sky-top); box-shadow: 0 0 0 3px rgba(30,136,229,0.15); }
+.btn-confirm {
+    padding: 1rem 4rem;
+    background: linear-gradient(135deg, #FFD600, #FF8F00);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 1.1rem; font-weight: 700;
+    color: #1a1a00; cursor: pointer; transition: all 0.28s ease;
+    box-shadow: 0 8px 28px rgba(255,214,0,0.45);
+    margin-top: 1.2rem;
+}
+.btn-confirm:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(255,214,0,0.55); }
+.btn-confirm:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ══════════════════════════════════
+   VICTORY / CERTIFICATE SCREEN
+══════════════════════════════════ */
+.victory-wrap { text-align: center; max-width: 720px; width: 100%; }
+.victory-icon { font-size: 4.5rem; margin-bottom: 1rem; display: inline-block; animation: bounce 1s ease infinite alternate; }
+.victory-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: #fff; text-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    margin-bottom: 0.5rem;
+}
+.victory-sub { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; }
+
+/* Certificate */
+.cert-box {
+    position: relative;
+    background: linear-gradient(160deg, #fffde7 0%, #fff9c4 40%, #fff8e1 100%);
+    border: 3px solid #FFD600;
+    border-radius: 24px;
+    padding: 2.8rem 2.2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(255,214,0,0.3), 0 8px 24px rgba(0,0,0,0.1);
+}
+/* Decorative corner borders */
+.cert-box::before {
+    content: '';
+    position: absolute; inset: 8px;
+    border: 1.5px dashed rgba(255,193,7,0.4);
+    border-radius: 18px;
+    pointer-events: none;
+}
+.cert-header {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.75rem;
+    color: rgba(180,120,0,0.7);
+    letter-spacing: 0.5em;
+    margin-bottom: 1.5rem;
+}
+.cert-title-zh {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: #7b4f00;
+    margin-bottom: 0.5rem;
+}
+.cert-student-name {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: #1565c0;
+    text-shadow: 0 2px 8px rgba(21,101,192,0.2);
+    margin: 0.5rem 0;
+    letter-spacing: 0.1em;
+}
+.cert-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.95rem; color: #5a3e00;
+    line-height: 1.9; margin: 0.8rem 0;
+}
+.cert-divider {
+    width: 140px; height: 2px;
+    background: linear-gradient(90deg, transparent, #FFD600, transparent);
+    margin: 1.2rem auto;
+}
+.cert-chars {
+    display: flex; justify-content: center;
+    gap: 0.65rem; flex-wrap: wrap; margin: 1rem 0;
+}
+.cert-char {
+    width: 56px; height: 56px;
+    border: 2px solid rgba(255,193,7,0.6);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.9rem;
+    color: #7b4f00;
+    background: rgba(255,214,0,0.15);
+    animation: certFloat 3.5s ease-in-out infinite;
+}
+@keyframes certFloat {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+.cert-phrase {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.3rem, 3.5vw, 2rem);
+    color: #7b4f00; letter-spacing: 0.15em; margin: 0.5rem 0;
+}
+.cert-score { font-size: 0.88rem; color: #5a3e00; margin: 0.3rem 0; }
+.cert-date { font-size: 0.8rem; color: rgba(90,62,0,0.65); margin-top: 0.3rem; }
+.cert-seal {
+    position: absolute; bottom: 1.5rem; right: 2rem;
+    width: 72px; height: 72px;
+    border: 3px solid rgba(255,150,0,0.55);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.75rem;
+    color: rgba(180,80,0,0.75); letter-spacing: 0.05em;
+    text-align: center; line-height: 1.5;
+    background: rgba(255,214,0,0.12);
+    box-shadow: inset 0 0 0 2px rgba(255,193,7,0.25);
+}
+
+.quote-block {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.9rem; color: rgba(255,255,255,0.88);
+    line-height: 2; margin-bottom: 2rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.quote-attr { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+.final-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-home {
+    padding: 0.88rem 2.6rem;
+    background: rgba(255,255,255,0.9);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700;
+    color: var(--sky-top); cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+}
+.btn-home:hover { transform: translateY(-2px); background: #fff; }
+.btn-replay {
+    padding: 0.88rem 2.6rem;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem;
+    color: #fff; cursor: pointer; transition: all 0.25s ease;
+}
+.btn-replay:hover { background: rgba(255,255,255,0.15); }
+
+/* ══════════════════════════════════
+   CONFETTI
+══════════════════════════════════ */
+.confetti-p {
+    position: fixed; pointer-events: none; z-index: 999;
+    animation: cFall var(--dur,3s) ease-in var(--dl,0s) forwards;
+}
+@keyframes cFall {
+    0%   { transform: translateY(-15px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(108vh) rotate(560deg); opacity: 0; }
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 600px) {
+    .sel-grid  { grid-template-columns: 1fr; }
+    .ans-grid  { grid-template-columns: 1fr; }
+    .q-card    { padding: 1.5rem 1.2rem; }
+    .frag-slot { width: 40px; height: 40px; font-size: 1.15rem; }
+    .cert-char { width: 46px; height: 46px; font-size: 1.55rem; }
+    .einstein-wrap { width: 90px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ▌Sky Background -->
+<div class="sky-bg">
+    <div class="sun-rays"></div>
+    <div class="sun"></div>
+    <div class="clouds-layer">
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
+        <div class="cloud c4"></div>
+        <div class="cloud c5"></div>
+    </div>
+    <div class="sky-ground"></div>
+</div>
+
+<!-- ▌Sound Toggle -->
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="音效開關">🔊</button>
+
+<!-- ▌Einstein character -->
+<div class="einstein-wrap" id="einsteinWrap">
+    <img src="assets/img/einstein.png" alt="愛因斯坦" onerror="this.parentElement.style.display='none'">
+</div>
+
+<!-- ▌Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ▌Audio -->
+<audio id="bgm" src="assets/audio/Music_Trap_Drama.mp3" loop preload="auto"></audio>
+<audio id="sfxWin" src="assets/audio/Awards.m4a" preload="auto"></audio>
+
+<!-- ══════════════════════════════════
+     HOME SCREEN
+══════════════════════════════════ -->
+<div class="screen" id="homeScreen">
+    <div class="home-hero">
+        <p class="home-eyebrow">📖 閱讀密室逃脫</p>
+        <h1 class="home-main-title">謝 天</h1>
+        <p class="home-sub-title">閱讀密室逃脫</p>
+        <p class="home-desc">陳之藩 · 散文 ｜ 解開文字之謎，尋覓感恩之道</p>
+    </div>
+
+    <div class="sel-grid">
+        <div class="sel-panel">
+            <div class="sel-head">🎯 選擇難度</div>
+            <div class="choice-list">
+                <button class="choice-btn" id="cBeginner" onclick="pick('diff','beginner',this)">
+                    <span class="choice-icon">🌱</span>
+                    <div class="choice-info">
+                        <div class="choice-name">新手探索者</div>
+                        <div class="choice-hint">課文基本理解與重點掌握</div>
+                    </div>
+                </button>
+                <button class="choice-btn" id="cExpert" onclick="pick('diff','expert',this)">
+                    <span class="choice-icon">🔥</span>
+                    <div class="choice-info">
+                        <div class="choice-name">高手挑戰者</div>
+                        <div class="choice-hint">深度分析、批判思考與鑑賞</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="sel-panel">
+            <div class="sel-head">🗝️ 選擇關卡數</div>
+            <div class="choice-list">
+                <button class="choice-btn" id="c5" onclick="pick('levels',5,this)">
+                    <span class="choice-icon">🚪</span>
+                    <div class="choice-info">
+                        <div class="choice-name">五關密室</div>
+                        <div class="choice-hint">約 3 分鐘，輕鬆體驗</div>
+                    </div>
+                </button>
+                <button class="choice-btn" id="c10" onclick="pick('levels',10,this)">
+                    <span class="choice-icon">🏯</span>
+                    <div class="choice-info">
+                        <div class="choice-name">十關迷城</div>
+                        <div class="choice-hint">約 5 分鐘，完整挑戰</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-start" id="btnStart" onclick="startGame()" disabled>✨ 開始逃脫</button>
+    <div class="divider"></div>
+    <p class="divider-note">每關答對即獲得密碼碎片 · 集齊碎片方能逃出密室</p>
+</div>
+
+<!-- ══════════════════════════════════
+     GAME SCREEN
+══════════════════════════════════ -->
+<div class="screen hidden" id="gameScreen">
+    <button class="btn-back" onclick="goHome()">← 返回</button>
+    <div class="game-inner">
+        <div class="pg-wrap">
+            <div class="pg-meta">
+                <span class="pg-level" id="pgLevel">第 1 關</span>
+                <span class="pg-count" id="pgCount">0 / 5</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill" id="pgFill" style="width:0%"></div></div>
+        </div>
+        <div class="frag-row" id="fragRow"></div>
+        <div class="scene-wrap">
+            <span class="scene-icon" id="sceneIcon">🕯️</span>
+            <div class="scene-body" id="sceneBody"></div>
+        </div>
+        <div class="q-card" id="qCard">
+            <div class="q-text" id="qText"></div>
+            <div class="ans-grid" id="ansGrid"></div>
+        </div>
+        <div class="fb-box" id="fbBox">
+            <div class="fb-head" id="fbHead"></div>
+            <div class="fb-explain" id="fbExplain"></div>
+            <div class="fb-frag" id="fbFrag">
+                <span>🔑 獲得碎片：</span>
+                <span class="fb-frag-char" id="fbFragChar"></span>
+            </div>
+        </div>
+        <div class="action-row">
+            <button class="btn-retry" id="btnRetry" onclick="retryLevel()">🔄 再試一次</button>
+            <button class="btn-next"  id="btnNext"  onclick="nextLevel()">下一關 →</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     NAME INPUT SCREEN
+══════════════════════════════════ -->
+<div class="screen hidden" id="nameScreen">
+    <div class="name-wrap">
+        <div class="name-icon">🏆</div>
+        <h2 class="name-title">恭喜完成所有關卡！</h2>
+        <p class="name-sub">請輸入您的姓名，領取專屬畢業證書</p>
+        <div class="name-card">
+            <label class="name-label" for="nameInput">✏️ 學生姓名</label>
+            <input class="name-input" id="nameInput" type="text" placeholder="請輸入姓名" maxlength="10"
+                oninput="document.getElementById('btnConfirm').disabled = this.value.trim().length === 0">
+            <br>
+            <button class="btn-confirm" id="btnConfirm" onclick="showVictory()" disabled>
+                🎓 領取證書 →
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     VICTORY SCREEN
+══════════════════════════════════ -->
+<div class="screen hidden" id="victoryScreen">
+    <div class="victory-wrap">
+        <div class="victory-icon">🎊</div>
+        <h2 class="victory-title">成功逃脫！</h2>
+        <p class="victory-sub">密碼碎片全數集齊，解開謝天的智慧密語</p>
+
+        <!-- Certificate -->
+        <div class="cert-box">
+            <div class="cert-seal">老師<br>認證</div>
+            <div class="cert-header">✦ 閱讀理解密室逃脫 · 完成證書 ✦</div>
+            <div class="cert-title-zh">茲證明</div>
+            <div class="cert-student-name" id="certName">同學</div>
+            <div class="cert-text">已完成〈謝天〉閱讀密室逃脫</div>
+            <div class="cert-text">難度：<strong id="certDiff">新手探索者</strong>　關卡：<strong id="certLevels">五關密室</strong></div>
+            <div class="cert-divider"></div>
+            <div class="cert-text" style="font-size:0.8rem;">解鎖密語</div>
+            <div class="cert-chars" id="certChars"></div>
+            <div class="cert-phrase" id="certPhrase"></div>
+            <div class="cert-divider"></div>
+            <div class="cert-score" id="certScore"></div>
+            <div class="cert-date" id="certDate"></div>
+        </div>
+
+        <p class="quote-block">
+            「得之於人者太多，出之於己者太少。<br>
+            因為需要感謝的人太多了，就感謝天罷。」<br>
+            <span class="quote-attr">—— 陳之藩〈謝天〉</span>
+        </p>
+        <div class="final-btns">
+            <button class="btn-home"   onclick="goHome()">🏠 返回首頁</button>
+            <button class="btn-replay" onclick="replayGame()">🔄 再玩一次</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────
+   STATIC DATA
+───────────────────────────────── */
+const SCENARIOS = [
+    { icon:'🌤️', text:'天光燦爛，你推開書房木門，一張泛黃紙條在陽光下若隱若現，只有答對問題，才能獲得第一塊密碼碎片……' },
+    { icon:'☀️',  text:'陽光穿透雲層，照在一卷攤開的書卷上，書頁字跡蒼勁，透著深意，等待你解讀……' },
+    { icon:'⛅',  text:'半遮的陽光中，你看見書架上有一本書插錯了位置，翻開扉頁，問題隱藏其中……' },
+    { icon:'🌈', text:'雨後彩虹高掛天際，光影在地面投映出一道問題，唯有知識方能解開……' },
+    { icon:'🌥️', text:'白雲飄過藍天，一把古舊的鑰匙在光下閃爍，通往下一個謎題的門就在前方……' },
+    { icon:'🕊️', text:'一隻白鴿停在窗欄，牠腳上繫著一張紙條，是下一道謎題……' },
+    { icon:'🌻', text:'窗外的向日葵轉向陽光，書桌上的問題在暖光中等待著你……' },
+    { icon:'🌊', text:'遠處海天一色，「得之於人者太多，出之於己者太少」——帶著這句話，挑戰下一道謎題……' },
+    { icon:'🦋', text:'一隻蝴蝶停在書頁上，牠的翅膀上有字，是倒數第二的考驗……' },
+    { icon:'🌟', text:'最後一關！天空最亮的一顆星閃爍，照亮了終極謎題，答對即可逃脫！' }
+];
+
+const FRAGMENTS = {
+    5:  ['謝','天','飲','水','源'],
+    10: ['謝','天','飲','水','思','源','得','之','於','人']
+};
+const PHRASES = {
+    5:  '謝天・飲水思源',
+    10: '謝天・飲水思源・得之於人'
+};
+const DIFF_LABEL = { beginner:'🌱 新手探索者', expert:'🔥 高手挑戰者' };
+const LEVEL_LABEL = { 5:'🚪 五關密室', 10:'🏯 十關迷城' };
+
+/* ─────────────────────────────────
+   QUESTION BANK (擴充題庫，各 16 題)
+───────────────────────────────── */
+const QDB = {
+
+    /* ════ BEGINNER (16 題) ════ */
+    beginner: [
+        {
+            q: '作者剛到美國時，在外國朋友家吃飯常常「鬧得尷尬」，原因是？',
+            opts: ['不等主人禱告完就開動了', '不熟悉西方刀叉禮儀，不知道應該如何動作', '聽不懂英文菜單，不知道點哪道菜才好', '帶了國內食物前往，讓主人感到困惑不解'],
+            ans: 0,
+            exp: '文中說「因為在國內養成的習慣，還沒有坐好，就開動了」——他不熟悉西方飯前禱告習俗，每次都搶先動筷，因此頻頻失禮。'
+        },
+        {
+            q: '祖母叮嚀作者「飯碗裡一粒米都不許剩」，她的理由是？',
+            opts: ['老天爺賞賜的飯食要懂得珍惜，不可蹧蹋', '節省每日家庭開銷，養成精打細算的好習慣', '飲食均衡完整攝取，才能維持身體的長期健康', '遵守中國傳統飲食禮儀，不許在用餐後留下剩菜'],
+            ans: 0,
+            exp: '祖母說「老天爺賞我們家飽飯吃，記住，飯碗裡一粒米都不許剩，要是蹧蹋糧食，老天爺就不給咱們飯了」——核心是感謝上天賜食、惜福不蹧蹋。'
+        },
+        {
+            q: '少年時期的作者，對祖母「謝天」的態度是？',
+            opts: ['認為是「既多餘、又落伍」的迷信', '非常認同祖母做法，並主動向她學習如何謝天', '將信將疑，偶爾在吃飯前跟著祖母一起謝天', '覺得有趣，好奇多次詢問祖母謝天的由來'],
+            ans: 0,
+            exp: '作者就讀的學校原是廟宇，課文講破除迷信，他甚至給神像胡亂塗改，認為祖母的「老天爺」觀念「既多餘，又落伍」。'
+        },
+        {
+            q: '作者在哪個地方讀到愛因斯坦著作，因而有了新的領悟？',
+            opts: ['普林斯頓', '麻薩諸塞州哈佛大學的圖書館', '紐約市鬧區的一間公立圖書館', '回到台灣之後，在故鄉家中的書房裡'],
+            ans: 0,
+            exp: '文中明確記載：「一直到前年，我在普林斯頓，瀏覽愛因斯坦的《我所看見的世界》，得到了新的領悟。」'
+        },
+        {
+            q: '愛因斯坦在著作中最讓作者感動的表現是？',
+            opts: ['將貢獻歸功於他人，功成不居', '詳細記述自己多年奮鬥的偉大科學成就', '批評同時代未盡力研究的其他科學家', '強調科學理性的力量足以改變整個世界'],
+            ans: 0,
+            exp: '作者發現愛因斯坦「想盡量給聽眾一個印象：即他的貢獻不是源於甲，就是由於乙，而與愛因斯坦本人不太相干似的」，連相對論也感謝友人貝索。'
+        },
+        {
+            q: '作者真正頓悟「謝天」意義的契機是？',
+            opts: ['自己做了研究、有了貢獻後，感到得之於人者太多', '被外國老太太深情的禱告聲感動，當場落淚', '祖母臨終時留下一句話，讓他深刻改變想法', '在教堂聆聽神父詳細講道後，改變了信仰觀念'],
+            ans: 0,
+            exp: '原文說「幾年來自己的奔波，作了一些研究……真正做了一些小貢獻以後，才有了一種新的覺悟：即是無論什麼事，得之於人者太多，出之於己者太少。」'
+        },
+        {
+            q: '下列何者未出現在文章對西方「謝天」情境的描述中？',
+            opts: ['神父在教堂帶領全體會眾一起禱告', '小孩舉起小手低著頭感謝上天的賜予', '主人家的祖母在搖曳燭光下虔誠謝飯', '蠟燭燃起，菜餚布好，客主依序就位'],
+            ans: 0,
+            exp: '文中描述的是在「外國朋友家吃飯」的飯前禱告場景，並未提及教堂或神父，「神父帶領會眾禱告」未出現在文中。'
+        },
+        {
+            q: '「創業的人都會想到上天，敗家的人卻無時不想到自己」的核心含義是？',
+            opts: ['創業者懂感恩飲水思源，敗家者只顧一己之利', '創業者皆具有虔誠的宗教信仰，而敗家者則完全沒有', '成功是上天特別賜予的，失敗則是個人選擇所造成', '創業靠的是機遇與運氣，敗家完全是個人咎由自取'],
+            ans: 0,
+            exp: '創業者能飲水思源、常懷感謝；敗家者只顧一己利益，不知成果乃眾人努力而來——這是精神層面的對比，而非宗教或命運的論斷。'
+        },
+        {
+            q: '本文最能點出全文主旨的句子是？',
+            opts: ['得之於人者太多，出之於己者太少，因為需要感謝的人太多了，就感謝天罷', '要滴下眉毛上的汗珠，才能撿起田中的麥穗，這句話充分說明辛苦付出方能有所收穫', '越是真正做過一點事，越是感覺自己的貢獻之渺小，說明人在有所成就時更需要保持謙遜', '無論什麼事，不是需要先人的遺愛與遺產，即是需要眾人共同的支持與密切合作才能順利完成'],
+            ans: 0,
+            exp: '這句話是全文的核心主旨：感謝的人太多無從一一道謝，故以「謝天」總括，是文章標題的最佳詮釋。'
+        },
+        {
+            q: '作者少年時感謝「面前的祖父母」而非「渺茫的老天爺」，原因是？',
+            opts: ['祖父母的付出清晰可見，老天爺則遙遠渺茫難以感受', '他從小就完全不相信世界上存在任何神明或上天', '感謝祖父母是中國傳統價值觀的核心要求與規範', '老師曾教導他，應當只感謝有名有姓、具體可見的人'],
+            ans: 0,
+            exp: '原文說「我感謝面前的祖父母，不必感謝渺茫的老天爺」——關鍵在於祖父母的汗水與犧牲清晰真實，而「老天爺」對他來說是抽象且遙遠的。'
+        },
+        {
+            q: '文中「感謝天」的真正含義是？',
+            opts: ['感謝的人太多無從個別致謝，以「天」作為對所有恩人的總稱', '必須誠心信仰宇宙的神明，以此感謝上帝每日給予我們無微不至的照顧、引導與恩賜', '衷心感謝大自然賜予人類風調雨順，以及提供四季豐收與大地萬物賴以生存的各種恩賜', '對於生命與命運的所有安排表示萬分感激，並選擇虛心順從天意而不過度去強求結果'],
+            ans: 0,
+            exp: '作者說「因為需要感謝的人太多了，就感謝天罷」——「謝天」是對所有給予者的總稱，不是宗教行為，而是飲水思源的謙遜態度。'
+        },
+        {
+            q: '「這種謙抑，這種不居功，科學史中是少見的」，「少見」形容的是誰？',
+            opts: ['愛因斯坦在科學史上難得一見的不居功態度', '祖母默默無聞、任勞任怨的無私奉獻精神', '貝索在相對論研究上至今仍鮮為人知的巨大貢獻', '作者在學術界長期謙遜低調、從不居功的研究態度'],
+            ans: 0,
+            exp: '文中說愛因斯坦雖然做出亙古以來的嶄新理論，卻在最後感謝友人，這種不居功的謙抑在科學史中罕見，故稱「少見」。'
+        },
+        {
+            q: '文章中「我的書桌就是供桌」，說明了什麼？',
+            opts: ['作者的學校是由廟宇改建，環境充滿傳統神明信仰氛圍', '作者家境非常貧困，家中只有一張破舊供桌可當書桌', '作者在童年時期特別喜歡在老舊廟宇等安靜的環境中專心讀書和獨立思考', '作者的祖母虔誠供奉神明，讓神桌成為家中擺設重心'],
+            ans: 0,
+            exp: '文中描述作者的學校「就是從前的關帝廟」，書桌是供桌，說明他成長的環境雖有傳統信仰，卻同時接受新式破除迷信教育，形成對比。'
+        },
+        {
+            q: '作者讀到愛因斯坦「感謝貝索的時相討論」時，感到驚訝的原因是？',
+            opts: ['狹義相對論是嶄新獨創的理論，本無參考可引，卻仍感謝他人', '貝索是愛因斯坦的學生，科學家公開感謝學生是極為罕見的事', '相對論早有許多前人研究，這種情況下的感謝顯得不太必要', '貝索實際上從來沒有參與過相對論任何部分的討論或研究'],
+            ans: 0,
+            exp: '文中說狹義相對論「並無參考可引」，是亙古以來的嶄新獨創，卻在最後「天外飛來一筆」感謝貝索，這才顯得難能可貴。'
+        },
+        {
+            q: '「越是真正做過一點事，越是感覺自己的貢獻之渺小」，這句話最接近哪個意思？',
+            opts: ['愈是飽滿的稻穗，頭垂得愈低', '要怎麼收穫，先怎麼栽，努力才能換來成果', '一分耕耘，一分收穫，付出必定會有相對回報', '失敗為成功之母，從挫折中汲取成長的養分'],
+            ans: 0,
+            exp: '越有成就越謙遜，正如稻穗越飽滿越低頭，意近「愈是飽滿的稻穗，頭垂得愈低」——這是句旨中所提供的最佳詮釋。'
+        },
+        {
+            q: '文中「滔天巨浪」比喻的是作者什麼樣的心情？',
+            opts: ['見到外國老太太謝飯，勾起兒時記憶，引發深刻的情感震動', '在異鄉獨自生活多年，思鄉之苦在某個瞬間集中爆發', '對西方飲食文化的強烈衝擊感到不安與不知所措', '對自己長久以來不信任宗教的做法開始動搖懷疑'],
+            ans: 0,
+            exp: '文中說「我忽然覺得我平靜如水的情感翻起滔天巨浪來」——外國老太太謝飯的場景喚起作者對祖母的記憶，引發強烈的情感波動。'
+        }
+    ],
+
+    /* ════ EXPERT (16 題) ════ */
+    expert: [
+        {
+            q: '「我忽然覺得我平靜如水的情感翻起滔天巨浪來」，這個比喻最準確描述了什麼？',
+            opts: ['外國老太太謝飯觸發對祖母的記憶，引發強烈情感波動，是全文的思想轉折點', '作者對於西方宗教文化與傳統禮儀突然產生了無法適應的強烈排斥與反感', '作者多年來積累的深切思鄉之情，在異國他鄉的溫馨家庭聚會中突然毫無預警地爆發', '作者對於西方家庭在用餐前所舉行的虔誠謝天儀式，感到極度震撼與由衷的感動'],
+            ans: 0,
+            exp: '這是全文的情感轉折點：外國老太太謝飯喚起對童年祖母的深刻記憶，激起作者重新思考「謝天」意義的內心巨浪，為後文頓悟埋下伏筆。'
+        },
+        {
+            q: '文章中「謎」字所承擔的敘事功能是？',
+            opts: ['承上（質疑）啟下（頓悟），是全文的敘事樞紐與轉折核心', '點明全文的核心主旨，並在段落開頭直接向讀者揭示所有問題的正確答案', '全面總結前半段所發生的故事背景，為作者接下來準備結束全文做出完美鋪陳', '以懸疑的方式引出下一個即將登場的關鍵新人物，為故事增添層次與趣味性'],
+            ans: 0,
+            exp: '「這種奇怪的心理狀態，一直是我心中的一個謎」——向上承接作者的困惑，向下引出在普林斯頓讀到愛因斯坦後的頓悟，是全文的關鍵轉折點。'
+        },
+        {
+            q: '作者引用愛因斯坦「感謝貝索的時相討論」，在論證上的主要作用是？',
+            opts: ['以最偉大的科學成就者示範「得之於人者太多」，為主旨提供最有力的佐證', '藉此詳細說明科學界的所有重大研究與發現，都必須完全仰賴跨領域團隊的共同合作', '高度讚揚愛因斯坦在科學成就極高時，依然能保持無比謙遜是人類歷史上難得的美德', '從物理學的角度來詳細解釋狹義相對論在學術發表上的創作過程與歷史背景脈絡'],
+            ans: 0,
+            exp: '作者以愛因斯坦這個世所公認的偉人案例，說明越是有成就者越懂感恩——這與「得之於人者太多，因此感謝天」的主旨互為呼應，具有極強說服力。'
+        },
+        {
+            q: '「越是真正做過一點事，越是感覺自己的貢獻之渺小」，這句話的深層邏輯是？',
+            opts: ['有了實際貢獻後，反而更能體察他人的付出，因而愈發謙遜感恩', '人在實際參與了許多社會事務後，才會漸漸發現自己個人的能力是多麼地局限與不足', '指出謙虛其實只是成功人士用來在社會大眾面前展示個人良好風度的某種表演方式', '認為微小的貢獻本來就沒有任何值得向他人炫耀或是在歷史上特別稱道與記錄的地方'],
+            ans: 0,
+            exp: '這句話呼應「得之於人者太多」——親身體驗後才能深刻理解自己的成就是多少人的結晶，因此反而更感渺小、更懂感恩。意近「愈是飽滿的稻穗，頭垂得愈低」。'
+        },
+        {
+            q: '本文的整體敘事結構最接近哪種類型？',
+            opts: ['由質疑到頓悟的心理歷程（起——疑——悟），貫穿三個主要事件', '以地點與空間的轉移為線索：從留學的美國，回到回憶中的台灣，最後再回到美國現實', '採用嚴格的演繹法論證：在文章開頭先揭示謝天的核心主旨，隨後才列舉各種事例來佐證', '以純粹的時間先後順序為脈絡，記錄作者從小到大在思想與學業上的成長日記式敘事'],
+            ans: 0,
+            exp: '文章以「心理歷程」為主軸：美國入境隨俗但存疑（起）→ 祖母謝天與自身理性相矛盾（疑）→ 讀到愛因斯坦著作而頓悟（悟），是典型的「起—疑—悟」結構。'
+        },
+        {
+            q: '「像愛因斯坦之於相對論，像我祖母之於我家」這個並列類比，傳達了什麼更深的含義？',
+            opts: ['兩人在各自領域貢獻卓著卻功成不居，說明謝天精神是跨越文化、跨越階層的普世美德', '強調無論是名滿天下的愛因斯坦，還是平凡的祖母，都是社會上最值得大眾稱頌的偉大人物', '說明在人類社會的結構中，尖端科學家與操持家務的家庭主婦所做出的具體貢獻同樣極具價值', '指出這兩位不同背景的人，在面對生命中的挑戰時，都同樣選擇了以宗教信仰作為人生主要支柱'],
+            ans: 0,
+            exp: '作者以「西方科學巨人」並列「東方農家祖母」，打破文化與身份界限，說明謙遜感恩的「謝天」精神跨越中西、跨越時代，是普世的人生智慧。'
+        },
+        {
+            q: '「這種謙抑，這種不居功，科學史中是少見的」，「少見」在論證上有何作用？',
+            opts: ['反襯愛因斯坦謙遜不居功之難能可貴，強化其作為「謝天」典範的說服力', '嚴厲批評當時乃至整個科學界普遍存在著傲慢自大、互相剽竊成果以及不尊重他人的嚴重問題', '委婉暗示凡是性格保持謙遜而不主動爭奪名利的人，往往在人類歷史的記載上都會顯得默默無聞', '具體說明愛因斯坦因為其超前的科學理論，在當時的學術界中其實面臨著孤立無援的悲慘處境'],
+            ans: 0,
+            exp: '「少見」並非批評，而是對比——正因如此罕見，愛因斯坦的謙遜才更顯珍貴，作為「謝天精神」典範的說服力也因此更強，反向強化了主旨的崇高性。'
+        },
+        {
+            q: '作者「給周倉畫上眼鏡、給關平戴上鬍子」，這個細節的敘事功能是？',
+            opts: ['說明作者從小就有反對迷信的傾向，為他日後質疑「謝天」埋下性格伏筆', '生動描繪作者在童年時期非常可愛、調皮且富有想像力的性格，為整篇嚴肅的散文增添趣味性', '透過孩童對神像的塗鴉，來嚴厲批評與諷刺傳統社會中那些過時且不合時宜的宗教廟宇文化', '向讀者展示作者在非常年幼的時候，就已經顯露出非凡的藝術繪畫才能與敏銳的視覺觀察力'],
+            ans: 0,
+            exp: '這個細節精準刻畫了少年作者「打倒偶像、破除迷信」的思想傾向，解釋他為何對祖母的「謝天」持懷疑態度，是重要的人物性格塑造筆墨。'
+        },
+        {
+            q: '〈謝天〉最後一句話「創業的人想到上天，敗家的人想到自己」，其批判的深層指向是？',
+            opts: ['以「創業者飲水思源」對比「敗家者唯我獨尊」，諷刺只知自利者才是精神上真正的失敗者', '嚴厲批評並反思當前缺乏傳統道德與虔誠宗教信仰的現代社會，指出這是一種道德墮落的風氣', '強調命運與運氣才是決定個人成敗的唯一關鍵，而人類自身的努力在宏大天意面前作用極為有限', '具體說明虔誠的宗教信仰與對上天的敬畏，其實才是現代企業或是個人事業在商業上能夠成功的關鍵因素'],
+            ans: 0,
+            exp: '這是全文的警示性結語：能感恩者是「創業」之人；只知自我、不知感恩者是「敗家」之人。此處「敗家」是精神層面的失敗，是全文主旨的有力收束。'
+        },
+        {
+            q: '若用「飲水思源」概括本文主旨，最有說服力的理由是？',
+            opts: ['作者由自身成就回溯所有給予養分的人，體悟必須感恩，完整呼應「飲水思源」的精神', '因為文章中確實反覆出現了大量與水、奔波、河流以及廣闊天空這類大自然景觀相關的具體修辭意象', '因為這是作者本人在整篇文章的後半段中，為了做總結而特意且親口直接引用並詳細闡釋的成語', '因為「飲水思源」是標準的四字成語，在教學上非常易記，極度適合作為國文課本中這篇課文的核心主旨'],
+            ans: 0,
+            exp: '「得之於人者太多，出之於己者太少」正是「飲水思源」的具體展現：任何成就皆有其根源（先人遺愛、眾人協助、等候機會），理應感恩，與「飲水思源」精神完全吻合。'
+        },
+        {
+            q: '文章以「一直到前年」作為過渡，這個時間標記的敘事作用是？',
+            opts: ['標示思想轉折的時間點，強調「悟」是在具體事件後才發生的，增加真實感', '藉此向讀者說明作者在美國的學術界已經生活了相當漫長的一段歲月，因此也逐漸習慣了西方的所有飲食文化與日常禮儀', '在寫作技巧上，這只是一個用來在童年溫馨回憶與美國冰冷現實之間進行無縫跳接與過渡的簡單時間標記', '暗示讀者作者此時在心態上已經成熟，並在寫作當下即將決定收拾行李離開美國，啟程返回久違的台灣故鄉'],
+            ans: 0,
+            exp: '「一直到前年，我在普林斯頓」——這個時間標記清晰交代頓悟發生的時機，使心理歷程更具體可信，也讓全文「起—疑—悟」的結構更加完整。'
+        },
+        {
+            q: '文中「先人的遺愛與遺產」和「眾人的支持與合作」並列，其修辭意義是？',
+            opts: ['透過時間（先人）與空間（眾人）的雙重視角，說明個人的成就永遠有其根源', '在文章中特別強調家族長輩所遺留下來的財富傳承，對於後代子孫在事業發展上具有決定性的關鍵重要性', '向社會大眾說明，只有具備極佳的家世背景與豐厚的家族遺產，才能最終決定一個人在學術或事業上的成就', '透過強烈的語氣來嚴厲批評與反思現代社會上那些自私自利、只顧著追求個人利益而完全不懂得感恩的少數人'],
+            ans: 0,
+            exp: '先人的遺愛（時間縱軸）與眾人的合作（空間橫軸），構成了個人成就的完整根源，說明「得之於人者太多」——不只是個人所謂的努力，而是歷史與社會的共同成果。'
+        },
+        {
+            q: '作者說愛因斯坦的廣義相對論「數學部分推給了昔年好友的合作」，這說明了什麼？',
+            opts: ['愛因斯坦將困難的部分歸功他人，體現了「得之於人者太多」的謙遜精神', '說明廣義相對論中所有高深的數學計算與公式推導，其實全部都是由他的那位昔年好友在私底下獨立完成的', '暗示愛因斯坦本人其實在高等數學的領域上並非擅長，因此在研究的關鍵時刻極度需要依賴朋友來代為效勞', '指出這其實只是在國際學術界與科學界中，研究者之間為了逃避特定責任而非常常見的互相推辭與合作行為'],
+            ans: 0,
+            exp: '愛因斯坦奮鬥苦思十幾年的廣義相對論，仍主動把數學部分的功勞歸給好友，正是「得之於人者太多，出之於己者太少」的具體示範。'
+        },
+        {
+            q: '「牛頓站在巨人肩膀上」這句話，最能呼應本文哪句話？',
+            opts: ['無論什麼事，不是需要先人的遺愛與遺產，即是需要眾人的支持與合作', '說明每個人在社會上所得到的恩惠都遠遠超過自己做出的付出，即是所謂的「得之於人者太多，出之於己者太少」', '說明一個人的工作經驗愈多、在學術上做出的研究愈深入，就愈發會打從心底感覺到自己個人的貢獻是極為渺小的', '因為我們日常生活中需要感謝的人與事物實在是多到數不勝數，所以最好的方式就是以古人的智慧，直接去感謝上天'],
+            ans: 0,
+            exp: '句旨中提到牛頓「站在巨人肩膀上」是「無論什麼事，不是需要先人的遺愛與遺產，即是需要眾人的支持與合作」的最佳注解，說明個人成就建立於歷代積累之上。'
+        },
+        {
+            q: '本文採用第一人稱「我」敘述，對論證的最大效果是？',
+            opts: ['讓讀者直接感受作者從質疑到頓悟的心路歷程，增強真實感與說服力', '僅僅是為了符合當時現代白話散文在寫作與發表時的一般常見習慣，並沒有其他多餘或是特別顯著的修辭或論證效果', '透過描述作者隻身在異國求學奮鬥的種種生活細節，來使讀者在閱讀時更容易對作者的孤單處境產生深刻的心理同情', '用以向讀者詳細說明這篇文章其實只是作者在日常生活中，隨手記錄的一篇純粹屬於個人隱私的日常生活日記與隨筆'],
+            ans: 0,
+            exp: '第一人稱讓讀者直接跟隨作者的心理轉變，從質疑到頓悟的過程更加真實可信，同時使「謝天」的主旨從個人體驗出發，更容易引起讀者共鳴。'
+        },
+        {
+            q: '「因為需要感謝的人太多了，就感謝天罷」——作者在此用「天」而不具體列名，其深意是？',
+            opts: ['感謝名單無窮無盡，「天」是對所有恩人的謙遜總括，也是一種不居功的謙遜姿態', '說明作者在心態上已經發生了根本性的轉變，在此時確實深信不疑世界上有某種具體神明存在，並且時時刻刻都在賜福於人類', '在中國傳統文化的語境中，「天」一直以來都代表著個人道德修養與修行的最高境界，因此在這裡特別借用此詞來做為比喻', '說明這句話在寫作技巧的修辭設計上，純粹只是為了與文章的標題「謝天」互相呼應，並沒有其他更具體或深刻的哲學內涵'],
+            ans: 0,
+            exp: '「謝天」不是宗教行為，而是面對無法一一列名的眾多恩人時的謙遜總括——「天」承載了所有人的恩情，體現了「得之於人者太多，出之於己者太少」的深刻自覺。'
+        },
+        {
+            q: '文章中「祖父每年在風裡雨裡的咬牙，祖母每年在茶裡飯裡的自苦」，這句描寫的修辭效果是？',
+            opts: ['以對仗呈現祖父母在外在（風雨）與內在（飲食起居）兩個層面的辛苦，凸顯謝天的由來', '用來非常寫實且詳細地描繪當時早期台灣傳統農村社會中，一般農民在日常生活中所面臨的種種艱難與生計困苦的真實寫照', '透過日常勞作與家庭瑣事的細緻對比，藉此用以說明作者的祖父與祖母兩人在漫長的婚姻生活中所建立的極為深厚之感情', '從社會科學的批判視角出發，來嚴厲抨擊和批評中國傳統舊社會制度中，對於勞動階層極為不公平的階級剝削與制度缺陷'],
+            ans: 0,
+            exp: '「風裡雨裡」（祖父，對外的勞苦）與「茶裡飯裡」（祖母，對內的節儉）形成工整的對仗，全面呈現長輩為家的犧牲，為「感謝人而非感謝天」的少年觀點埋下合理的基礎。'
+        }
+    ]
+};
+
+/* ─────────────────────────────────
+   SOUND
+───────────────────────────────── */
+let soundOn = true;
+const bgm    = document.getElementById('bgm');
+const sfxWin = document.getElementById('sfxWin');
+
+function toggleSound() {
+    soundOn = !soundOn;
+    document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) {
+        bgm.play().catch(()=>{});
+    } else {
+        bgm.pause();
+        sfxWin.pause();
+    }
+}
+
+function playBGM() {
+    if (soundOn) bgm.play().catch(()=>{});
+}
+function stopBGM() { bgm.pause(); bgm.currentTime = 0; }
+function playWin() {
+    if (!soundOn) return;
+    bgm.pause();
+    sfxWin.currentTime = 0;
+    sfxWin.play().catch(()=>{});
+}
+
+/* Auto-start BGM on first interaction */
+document.addEventListener('click', function startBGM() {
+    playBGM();
+    document.removeEventListener('click', startBGM);
+}, { once: true });
+
+/* ─────────────────────────────────
+   GAME STATE
+───────────────────────────────── */
+let G = {
+    diff: null, levels: null,
+    cur: 0, correct: 0,
+    questions: [], studentName: ''
+};
+
+/* ─────────────────────────────────
+   SELECTION
+───────────────────────────────── */
+function pick(type, val, el) {
+    if (type === 'diff') {
+        document.querySelectorAll('#cBeginner,#cExpert').forEach(b => b.classList.remove('picked'));
+        G.diff = val;
+    } else {
+        document.querySelectorAll('#c5,#c10').forEach(b => b.classList.remove('picked'));
+        G.levels = val;
+    }
+    el.classList.add('picked');
+    document.getElementById('btnStart').disabled = !(G.diff && G.levels);
+}
+
+/* ─────────────────────────────────
+   SCREEN TRANSITIONS
+───────────────────────────────── */
+function switchTo(id, afterFn) {
+    const ov = document.getElementById('overlay');
+    ov.classList.add('on');
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        if (afterFn) afterFn();
+        ov.classList.remove('on');
+    }, 340);
+}
+
+function goHome() {
+    stopBGM();
+    G = { diff: null, levels: null, cur: 0, correct: 0, questions: [], studentName: '', currentAnsIdx: 0 };
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('picked'));
+    document.getElementById('btnStart').disabled = true;
+    switchTo('homeScreen');
+}
+
+/* ─────────────────────────────────
+   GAME START
+───────────────────────────────── */
+function startGame() {
+    // Randomly select required number of questions from pool
+    const pool = [...QDB[G.diff]];
+    // Shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    G.questions = pool.slice(0, G.levels);
+    G.cur = 0; G.correct = 0;
+    playBGM();
+    switchTo('gameScreen', () => {
+        buildFragRow();
+        renderLevel();
+    });
+}
+
+function buildFragRow() {
+    const row = document.getElementById('fragRow');
+    row.innerHTML = '';
+    FRAGMENTS[G.levels].forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'frag-slot'; d.id = `fs${i}`;
+        d.textContent = '？';
+        row.appendChild(d);
+    });
+}
+
+/* ─────────────────────────────────
+   RENDER LEVEL
+───────────────────────────────── */
+function renderLevel() {
+    const q  = G.questions[G.cur];
+    const sc = SCENARIOS[G.cur % SCENARIOS.length];
+    const LT = ['A','B','C','D'];
+
+    document.getElementById('pgLevel').textContent = `第 ${G.cur + 1} 關`;
+    document.getElementById('pgCount').textContent  = `${G.cur} / ${G.levels}`;
+    document.getElementById('pgFill').style.width   = `${(G.cur / G.levels) * 100}%`;
+    document.getElementById('sceneIcon').textContent = sc.icon;
+    document.getElementById('sceneBody').textContent  = sc.text;
+    document.getElementById('qText').textContent = q.q;
+
+    // ── 隨機打亂答案順序 ──
+    const perm = [0, 1, 2, 3];
+    for (let i = perm.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [perm[i], perm[j]] = [perm[j], perm[i]];
+    }
+    const displayOpts = perm.map(idx => q.opts[idx]);
+    G.currentAnsIdx = perm.indexOf(q.ans); // q.ans 固定為 0（正確答案在資料第一位）
+
+    const grid = document.getElementById('ansGrid');
+    grid.innerHTML = '';
+    displayOpts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'ans-btn'; btn.id = `ab${i}`;
+        btn.innerHTML = `<span class="ans-badge">${LT[i]}</span><span>${opt}</span>`;
+        btn.onclick = () => handleAnswer(i);
+        grid.appendChild(btn);
+    });
+
+    document.getElementById('fbBox').className = 'fb-box';
+    document.getElementById('fbFrag').className = 'fb-frag';
+    document.getElementById('btnRetry').style.display = 'none';
+    document.getElementById('btnNext').style.display  = 'none';
+}
+
+/* ─────────────────────────────────
+   ANSWER HANDLING
+───────────────────────────────── */
+function handleAnswer(idx) {
+    const q = G.questions[G.cur];
+    document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+
+    if (idx === G.currentAnsIdx) {
+        document.getElementById(`ab${idx}`).classList.add('correct');
+        G.correct++;
+        showFeedback(true, q.exp);
+        setTimeout(() => {
+            const slot = document.getElementById(`fs${G.cur}`);
+            if (slot) { slot.textContent = FRAGMENTS[G.levels][G.cur]; slot.classList.add('lit'); }
+        }, 600);
+        document.getElementById('fbFragChar').textContent = FRAGMENTS[G.levels][G.cur];
+        document.getElementById('fbFrag').className = 'fb-frag show';
+        document.getElementById('btnNext').style.display = 'inline-block';
+    } else {
+        document.getElementById(`ab${idx}`).classList.add('wrong');
+        document.getElementById(`ab${G.currentAnsIdx}`).classList.add('correct');
+        const card = document.getElementById('qCard');
+        card.classList.add('shaking');
+        card.addEventListener('animationend', () => card.classList.remove('shaking'), { once: true });
+        showFeedback(false, q.exp);
+        document.getElementById('btnRetry').style.display = 'inline-block';
+        document.getElementById('btnNext').style.display  = 'inline-block';
+    }
+}
+
+function showFeedback(ok, explain) {
+    const box = document.getElementById('fbBox');
+    box.className = 'fb-box show ' + (ok ? 'fb-ok' : 'fb-ng');
+    document.getElementById('fbHead').textContent    = ok ? '✅ 答對了！密碼碎片已解鎖' : '❌ 答案有誤，請參考解析';
+    document.getElementById('fbExplain').textContent = explain;
+}
+
+function retryLevel() { renderLevel(); }
+
+function nextLevel() {
+    G.cur++;
+    if (G.cur >= G.levels) {
+        stopBGM();
+        showNameScreen();
+    } else {
+        const ov = document.getElementById('overlay');
+        ov.classList.add('on');
+        setTimeout(() => { renderLevel(); ov.classList.remove('on'); }, 340);
+    }
+}
+
+/* ─────────────────────────────────
+   NAME INPUT
+───────────────────────────────── */
+function showNameScreen() {
+    switchTo('nameScreen', () => {
+        document.getElementById('nameInput').value = '';
+        document.getElementById('btnConfirm').disabled = true;
+    });
+}
+
+/* ─────────────────────────────────
+   VICTORY
+───────────────────────────────── */
+function showVictory() {
+    G.studentName = document.getElementById('nameInput').value.trim() || '同學';
+    switchTo('victoryScreen', () => {
+        // Student name
+        document.getElementById('certName').textContent = G.studentName;
+        document.getElementById('certDiff').textContent  = DIFF_LABEL[G.diff];
+        document.getElementById('certLevels').textContent = LEVEL_LABEL[G.levels];
+
+        // Fragment tiles
+        const chars = document.getElementById('certChars');
+        chars.innerHTML = '';
+        FRAGMENTS[G.levels].forEach((ch, i) => {
+            const d = document.createElement('div');
+            d.className = 'cert-char'; d.textContent = ch;
+            d.style.animationDelay = `${i * 0.12}s`;
+            chars.appendChild(d);
+        });
+
+        document.getElementById('certPhrase').textContent = PHRASES[G.levels];
+        const pct = Math.round((G.correct / G.levels) * 100);
+        document.getElementById('certScore').textContent = `完成 ${G.correct} / ${G.levels} 關 · 一次答對率 ${pct}%`;
+
+        // Date
+        const now = new Date();
+        const dateStr = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日`;
+        document.getElementById('certDate').textContent = `完成日期：${dateStr}`;
+
+        playWin();
+        launchConfetti();
+    });
+}
+
+function replayGame() {
+    G.cur = 0; G.correct = 0;
+    // Re-shuffle questions
+    const pool = [...QDB[G.diff]];
+    for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    G.questions = pool.slice(0, G.levels);
+    playBGM();
+    switchTo('gameScreen', () => { buildFragRow(); renderLevel(); });
+}
+
+/* ─────────────────────────────────
+   CONFETTI
+───────────────────────────────── */
+function launchConfetti() {
+    const palette = ['#1e88e5','#FFD600','#43a047','#e53935','#8e24aa','#ff8f00','#fff'];
+    for (let i = 0; i < 110; i++) {
+        setTimeout(() => {
+            const p = document.createElement('div');
+            p.className = 'confetti-p';
+            const sz = Math.random() * 11 + 5;
+            const isRound = Math.random() > 0.5;
+            p.style.cssText = [
+                `left:${(Math.random()*100).toFixed(1)}vw`,
+                `top:-16px`,
+                `width:${sz}px`,
+                `height:${sz * (isRound ? 1 : 0.45)}px`,
+                `background:${palette[Math.floor(Math.random()*palette.length)]}`,
+                `border-radius:${isRound ? '50%' : '2px'}`,
+                `--dur:${(Math.random()*2+2.5).toFixed(1)}s`,
+                `--dl:0s`
+            ].join(';');
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 5500);
+        }, i * 38);
+    }
+}
+
+/* Enter key submits name */
+document.getElementById('nameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !document.getElementById('btnConfirm').disabled) showVictory();
+});
+</script>
+
+</body>
+</html>
